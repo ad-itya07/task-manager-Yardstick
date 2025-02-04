@@ -60,7 +60,7 @@ export default function Home() {
         description,
         dueDate,
       });
-      setTasks((prevTasks) => [...prevTasks, res.data]);
+      setTasks((prevTasks) => [res.data, ...prevTasks]);
       setTitle("");
       setDescription("");
       setDueDate("");
