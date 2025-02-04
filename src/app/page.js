@@ -30,6 +30,25 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
 
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const res = await axios.get("/api/tasks");
+      const sortedTasks = res.data.sort((a, b) => {
+        if (a.completed === b.completed) {
+          return new Date(a.dueDate) - new Date(b.dueDate); 
+        }
+        return a.completed ? 1 : -1; 
+      });
+      setTasks(sortedTasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
   const addTask = async () => {
     if (!title || !description || !dueDate) {
       alert("Please fill in all fields");
@@ -95,25 +114,6 @@ export default function Home() {
     setDueDate("");
     setIsEditing(false);
     setCurrentTask(null);
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const res = await axios.get("/api/tasks");
-      const sortedTasks = res.data.sort((a, b) => {
-        if (a.completed === b.completed) {
-          return new Date(a.dueDate) - new Date(b.dueDate);
-        }
-        return a.completed ? 1 : -1;
-      });
-      setTasks(sortedTasks);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
   };
 
   const toggleComplete = async (id, completed) => {
